@@ -12,7 +12,7 @@ const {Kafka} = require('kafkajs');
         const NUM_PARTITIONS = core.getInput('NUM_PARTITIONS')
         const CLEANUP_POLICY = core.getInput('CLEANUP_POLICY')
 
-        console.log(`Creating kafka topic ${TOPIC} on broker ${KAFKA_BROKER_URL}.`)
+        console.log(`Creating kafka topic ${TOPIC}.`)
     
         const adminClient = new Kafka({
             clientId: 'create-kafka-topic-gha',
@@ -36,7 +36,7 @@ const {Kafka} = require('kafkajs');
             }],
         })
         await adminClient.disconnect()
-        console.log(`Created kafka topic ${TOPIC} on broker ${KAFKA_BROKER_URL}.`)
+        console.log(`Created kafka topic ${TOPIC}.`)
     } catch (e) {
         core.setFailed(e.message)
     }

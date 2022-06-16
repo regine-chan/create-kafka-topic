@@ -2046,9 +2046,9 @@ var require_errors = __commonJS({
       }
     };
     var KafkaJSCreateTopicError = class extends KafkaJSProtocolError {
-      constructor(e, topicName2) {
+      constructor(e, topicName) {
         super(e);
-        this.topic = topicName2;
+        this.topic = topicName;
         this.name = "KafkaJSCreateTopicError";
       }
     };
@@ -5062,8 +5062,8 @@ var require_response9 = __commonJS({
     };
     var { code: OFFSET_OUT_OF_RANGE_ERROR_CODE } = errorCodes.find((e) => e.type === "OFFSET_OUT_OF_RANGE");
     var parse = async (data) => {
-      const errors = data.responses.flatMap(({ topicName: topicName2, partitions }) => {
-        return partitions.filter((partition) => failure(partition.errorCode)).map((partition) => Object.assign({}, partition, { topic: topicName2 }));
+      const errors = data.responses.flatMap(({ topicName, partitions }) => {
+        return partitions.filter((partition) => failure(partition.errorCode)).map((partition) => Object.assign({}, partition, { topic: topicName }));
       });
       if (errors.length > 0) {
         const { errorCode, topic, partition } = errors[0];
@@ -14006,7 +14006,7 @@ var require_createTopicData = __commonJS({
 // node_modules/kafkajs/src/producer/responseSerializer.js
 var require_responseSerializer = __commonJS({
   "node_modules/kafkajs/src/producer/responseSerializer.js"(exports, module2) {
-    module2.exports = ({ topics }) => topics.flatMap(({ topicName: topicName2, partitions }) => partitions.map((partition) => __spreadValues({ topicName: topicName2 }, partition)));
+    module2.exports = ({ topics }) => topics.flatMap(({ topicName, partitions }) => partitions.map((partition) => __spreadValues({ topicName }, partition)));
   }
 });
 
@@ -15334,13 +15334,13 @@ var require_consumerGroup = __commonJS({
             topics: requests,
             rackId: this.rackId
           });
-          return responses.flatMap(({ topicName: topicName2, partitions }) => {
-            const topicRequestData = requests.find(({ topic }) => topic === topicName2);
-            let preferredReadReplicas = this.preferredReadReplicasPerTopicPartition[topicName2];
+          return responses.flatMap(({ topicName, partitions }) => {
+            const topicRequestData = requests.find(({ topic }) => topic === topicName);
+            let preferredReadReplicas = this.preferredReadReplicasPerTopicPartition[topicName];
             if (!preferredReadReplicas) {
-              this.preferredReadReplicasPerTopicPartition[topicName2] = preferredReadReplicas = {};
+              this.preferredReadReplicasPerTopicPartition[topicName] = preferredReadReplicas = {};
             }
-            return partitions.filter(({ partition }) => !this.seekOffset.has(topicName2, partition) && !this.subscriptionState.isPaused(topicName2, partition)).map((partitionData) => {
+            return partitions.filter(({ partition }) => !this.seekOffset.has(topicName, partition) && !this.subscriptionState.isPaused(topicName, partition)).map((partitionData) => {
               const { partition, preferredReadReplica } = partitionData;
               if (preferredReadReplica != null && preferredReadReplica !== -1) {
                 const { nodeId: currentPreferredReadReplica } = preferredReadReplicas[partition] || {};
@@ -15348,7 +15348,7 @@ var require_consumerGroup = __commonJS({
                   this.logger.info(`Preferred read replica is now ${preferredReadReplica}`, {
                     groupId: this.groupId,
                     memberId: this.memberId,
-                    topic: topicName2,
+                    topic: topicName,
                     partition
                   });
                 }
@@ -15359,7 +15359,7 @@ var require_consumerGroup = __commonJS({
               }
               const partitionRequestData = topicRequestData.partitions.find(({ partition: partition2 }) => partition2 === partitionData.partition);
               const fetchedOffset = partitionRequestData.fetchOffset;
-              return new Batch(topicName2, fetchedOffset, partitionData);
+              return new Batch(topicName, fetchedOffset, partitionData);
             });
           });
         } catch (e) {
@@ -16252,7 +16252,7 @@ var require_consumer = __commonJS({
           const isRegExp = subscription instanceof RegExp;
           if (isRegExp) {
             const topicRegExp = subscription;
-            const matchedTopics = metadata.topicMetadata.map(({ topic: topicName2 }) => topicName2).filter((topicName2) => topicRegExp.test(topicName2));
+            const matchedTopics = metadata.topicMetadata.map(({ topic: topicName }) => topicName).filter((topicName) => topicRegExp.test(topicName));
             logger.debug("Subscription based on RegExp", {
               groupId,
               topicRegExp: topicRegExp.toString(),
@@ -17775,6 +17775,7 @@ var { Kafka } = require_kafkajs();
     const REPLICATION_FACTOR = core.getInput("REPLICATION_FACTOR");
     const NUM_PARTITIONS = core.getInput("NUM_PARTITIONS");
     const CLEANUP_POLICY = core.getInput("CLEANUP_POLICY");
+    console.log(`Creating kafka topic ${TOPIC}.`);
     const adminClient = new Kafka({
       clientId: "create-kafka-topic-gha",
       brokers: [KAFKA_BROKER_URL],
@@ -17787,7 +17788,7 @@ var { Kafka } = require_kafkajs();
     await adminClient.connect();
     await adminClient.createTopics({
       topics: [{
-        topic: topicName,
+        topic: TOPIC,
         replicationFactor: REPLICATION_FACTOR,
         numPartitions: NUM_PARTITIONS,
         configEntries: [
@@ -17796,6 +17797,7 @@ var { Kafka } = require_kafkajs();
       }]
     });
     await adminClient.disconnect();
+    console.log(`Created kafka topic ${TOPIC}.`);
   } catch (e) {
     core.setFailed(e.message);
   }
