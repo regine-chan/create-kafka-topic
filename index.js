@@ -3,14 +3,16 @@ const {Kafka} = require('kafkajs');
 
 (async () => {
     try {
-        const KAFKA_BROKER_URL = core.getInput("KAFKA_BROKER_URL")
-        const KAFKA_SSL_CA = core.getInput("KAFKA_SSL_CA")
-        const KAFKA_SSL_KEY = core.getInput("KAFKA_SSL_KEY")
-        const KAFKA_SSL_CERT = core.getInput("KAFKA_SSL_CERT")
-        const TOPIC = core.getInput("TOPIC")
-        const REPLICATION_FACTOR = core.getInput("REPLICATION_FACTOR")
-        const NUM_PARTITIONS = core.getInput("NUM_PARTITIONS")
-        const CLEANUP_POLICY = core.getInput("CLEANUP_POLICY")
+        const KAFKA_BROKER_URL = core.getInput('KAFKA_BROKER_URL')
+        const KAFKA_SSL_CA = core.getInput('KAFKA_SSL_CA')
+        const KAFKA_SSL_KEY = core.getInput('KAFKA_SSL_KEY')
+        const KAFKA_SSL_CERT = core.getInput('KAFKA_SSL_CERT')
+        const TOPIC = core.getInput('TOPIC')
+        const REPLICATION_FACTOR = core.getInput('REPLICATION_FACTOR')
+        const NUM_PARTITIONS = core.getInput('NUM_PARTITIONS')
+        const CLEANUP_POLICY = core.getInput('CLEANUP_POLICY')
+
+        console.log(`Creating kafka topic ${TOPIC} on broker ${KAFKA_BROKER_URL}.`)
     
         const adminClient = new Kafka({
             clientId: 'create-kafka-topic-gha',
@@ -29,11 +31,12 @@ const {Kafka} = require('kafkajs');
                 replicationFactor: REPLICATION_FACTOR,
                 numPartitions: NUM_PARTITIONS,
                 configEntries: [
-                    {name: "cleanup.policy", value: CLEANUP_POLICY},
+                    {name: 'cleanup.policy', value: CLEANUP_POLICY},
                 ],
             }],
         })
         await adminClient.disconnect()
+        console.log(`Created kafka topic ${TOPIC} on broker ${KAFKA_BROKER_URL}.`)
     } catch (e) {
         core.setFailed(e.message)
     }
