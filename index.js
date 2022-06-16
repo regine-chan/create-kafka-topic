@@ -1,7 +1,5 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
 const {Kafka} = require('kafkajs');
-const {SchemaRegistry, SchemaType} = require('@kafkajs/confluent-schema-registry');
 
 (async () => {
     try {
