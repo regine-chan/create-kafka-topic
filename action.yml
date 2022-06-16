@@ -28,9 +28,6 @@ inputs:
     description: 'Topic cleanup policy, can be either compact or delete.'
     required: false
     default: 'delete'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
 runs:
   using: 'node16'
   main: 'dist/index.js'
