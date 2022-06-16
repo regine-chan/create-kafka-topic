@@ -12,11 +12,6 @@ const {Kafka} = require('kafkajs');
         const NUM_PARTITIONS = core.getInput("NUM_PARTITIONS")
         const CLEANUP_POLICY = core.getInput("CLEANUP_POLICY")
     
-        createTopic(
-            TOPIC,
-            kafkaClient(KAFKA_BROKER_URL, KAFKA_SSL_CA, KAFKA_SSL_KEY, KAFKA_SSL_CERT)
-        )
-    
         const adminClient = new Kafka({
             clientId: 'create-kafka-topic-gha',
             brokers: [KAFKA_BROKER_URL],
