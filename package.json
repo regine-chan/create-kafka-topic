@@ -1,0 +1,26 @@
+{
+  "name": "create-kafka-topic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/regine-chan/create-kafka-topic.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/regine-chan/create-kafka-topic/issues"
+  },
+  "homepage": "https://github.com/regine-chan/create-kafka-topic#readme",
+  "dependencies": {
+    "@actions/core": "^1.9.0",
+    "@actions/github": "^5.0.3",
+    "@kafkajs/confluent-schema-registry": "^3.2.1",
+    "kafkajs": "^2.0.2"
+  }
+}

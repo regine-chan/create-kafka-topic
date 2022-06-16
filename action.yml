@@ -1,0 +1,36 @@
+name: 'Create a kafka topic'
+description: 'Create a kafka topic'
+inputs:
+  KAFKA_BROKER_URL:
+    description: 'URL to the kafka broker'
+    required: true
+  KAFKA_SSL_CA:
+    description: 'SSL certificate authority'
+    required: true
+  KAFKA_SSL_KEY:
+    description: 'SSL private key'
+    required: true
+  KAFKA_SSL_CERT:
+    description: 'SSL certificate'
+    required: true
+  TOPIC:
+    description: 'Topic to create'
+    required: true
+  REPLICATION_FACTOR:
+    description: 'Topic replication factor'
+    required: false
+    default: '2'
+  NUM_PARTITIONS:
+    description: 'Topic number of partitions'
+    required: false
+    default: '3'
+  CLEANUP_POLICY:
+    description: 'Topic cleanup policy, can be either compact or delete.'
+    required: false
+    default: 'delete'
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'node16'
+  main: 'index.js'
