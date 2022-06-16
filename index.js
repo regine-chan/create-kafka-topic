@@ -25,7 +25,7 @@ const {Kafka} = require('kafkajs');
         await adminClient.connect()
         await adminClient.createTopics({
             topics: [{
-                topic: topicName,
+                topic: TOPIC,
                 replicationFactor: REPLICATION_FACTOR,
                 numPartitions: NUM_PARTITIONS,
                 configEntries: [
