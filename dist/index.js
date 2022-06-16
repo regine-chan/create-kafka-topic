@@ -1,4 +1,35 @@
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
+};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
@@ -4488,7 +4519,7 @@ var require_request4 = __commonJS({
         const encodeTopic = topicEncoder(compression);
         const encodedTopicData = [];
         for (const data of topicData) {
-          encodedTopicData.push(await encodeTopic({ ...data, transactionalId, producerId, producerEpoch }));
+          encodedTopicData.push(await encodeTopic(__spreadProps(__spreadValues({}, data), { transactionalId, producerId, producerEpoch })));
         }
         return new Encoder().writeString(transactionalId).writeInt16(acks).writeInt32(timeout).writeArray(encodedTopicData);
       }
@@ -4503,7 +4534,7 @@ var require_request4 = __commonJS({
       const encodePartitions = partitionsEncoder(compression);
       const encodedPartitions = [];
       for (const data of partitions) {
-        encodedPartitions.push(await encodePartitions({ ...data, transactionalId, producerId, producerEpoch }));
+        encodedPartitions.push(await encodePartitions(__spreadProps(__spreadValues({}, data), { transactionalId, producerId, producerEpoch })));
       }
       return new Encoder().writeString(topic).writeArray(encodedPartitions);
     };
@@ -4520,11 +4551,10 @@ var require_request4 = __commonJS({
       const timestamps = messageTimestamps.length === 0 ? [dateNow] : messageTimestamps;
       const firstTimestamp = timestamps[0];
       const maxTimestamp = timestamps[timestamps.length - 1];
-      const records = messages.map((message, i) => Record({
-        ...message,
+      const records = messages.map((message, i) => Record(__spreadProps(__spreadValues({}, message), {
         offsetDelta: i,
         timestampDelta: (message.timestamp || dateNow) - firstTimestamp
-      }));
+      })));
       const recordBatch = await RecordBatch({
         compression,
         records,
@@ -4701,11 +4731,10 @@ var require_response7 = __commonJS({
     var { parse, decode: decodeV5 } = require_response6();
     var decode = async (rawData) => {
       const decoded = await decodeV5(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -5221,8 +5250,7 @@ var require_decoder7 = __commonJS({
       const offset = Long.fromValue(firstOffset).add(offsetDelta).toString();
       const key = decoder.readVarIntBytes();
       const value = decoder.readVarIntBytes();
-      const headers = decoder.readVarIntArray(HeaderDecoder).reduce((obj, { key: key2, value: value2 }) => ({
-        ...obj,
+      const headers = decoder.readVarIntArray(HeaderDecoder).reduce((obj, { key: key2, value: value2 }) => __spreadProps(__spreadValues({}, obj), {
         [key2]: obj[key2] === void 0 ? value2 : Array.isArray(obj[key2]) ? obj[key2].concat([value2]) : [obj[key2], value2]
       }), {});
       return {
@@ -5287,11 +5315,10 @@ var require_decoder8 = __commonJS({
         maxTimestamp,
         timestampType
       };
-      const records = await decodeRecords(codec, decoder, { ...recordContext, magicByte });
-      return {
-        ...recordContext,
+      const records = await decodeRecords(codec, decoder, __spreadProps(__spreadValues({}, recordContext), { magicByte }));
+      return __spreadProps(__spreadValues({}, recordContext), {
         records
-      };
+      });
     };
     var decodeRecords = async (codec, recordsDecoder, recordContext) => {
       if (!codec) {
@@ -6265,11 +6292,10 @@ var require_response24 = __commonJS({
     var { parse, decode: decodeV2 } = require_response23();
     var decode = async (rawData) => {
       const decoded = await decodeV2(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -6622,11 +6648,10 @@ var require_response31 = __commonJS({
     var { parse, decode: decodeV1 } = require_response30();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -6857,11 +6882,10 @@ var require_response36 = __commonJS({
     var { parse, decode: decodeV3 } = require_response35();
     var decode = async (rawData) => {
       const decoded = await decodeV3(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -7153,11 +7177,10 @@ var require_response41 = __commonJS({
     var { parse, decode: decodeV3 } = require_response40();
     var decode = async (rawData) => {
       const decoded = await decodeV3(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -7322,11 +7345,10 @@ var require_response44 = __commonJS({
     var { parse, decode: decodeV1 } = require_response43();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -7534,11 +7556,10 @@ var require_response48 = __commonJS({
     var { parse, decode: decodeV2 } = require_response47();
     var decode = async (rawData) => {
       const decoded = await decodeV2(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -7877,11 +7898,10 @@ var require_response53 = __commonJS({
     var { parse, decode: decodeV1 } = require_response52();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -8043,11 +8063,10 @@ var require_response57 = __commonJS({
     var { parse, decode: decodeV1 } = require_response56();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -8245,11 +8264,10 @@ var require_response61 = __commonJS({
     var { parse, decode: decodeV1 } = require_response60();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -8453,11 +8471,10 @@ var require_response65 = __commonJS({
     var { parse, decode: decodeV1 } = require_response64();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -8586,11 +8603,10 @@ var require_response68 = __commonJS({
     var { parse, decode: decodeV1 } = require_response67();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -8671,7 +8687,7 @@ var require_response69 = __commonJS({
 var require_request70 = __commonJS({
   "node_modules/kafkajs/src/protocol/requests/saslHandshake/v1/request.js"(exports, module2) {
     var requestV0 = require_request69();
-    module2.exports = ({ mechanism }) => ({ ...requestV0({ mechanism }), apiVersion: 1 });
+    module2.exports = ({ mechanism }) => __spreadProps(__spreadValues({}, requestV0({ mechanism })), { apiVersion: 1 });
   }
 });
 
@@ -8758,7 +8774,7 @@ var require_response71 = __commonJS({
 var require_request72 = __commonJS({
   "node_modules/kafkajs/src/protocol/requests/apiVersions/v1/request.js"(exports, module2) {
     var requestV0 = require_request71();
-    module2.exports = () => ({ ...requestV0(), apiVersion: 1 });
+    module2.exports = () => __spreadProps(__spreadValues({}, requestV0()), { apiVersion: 1 });
   }
 });
 
@@ -8796,7 +8812,7 @@ var require_response72 = __commonJS({
 var require_request73 = __commonJS({
   "node_modules/kafkajs/src/protocol/requests/apiVersions/v2/request.js"(exports, module2) {
     var requestV0 = require_request71();
-    module2.exports = () => ({ ...requestV0(), apiVersion: 2 });
+    module2.exports = () => __spreadProps(__spreadValues({}, requestV0()), { apiVersion: 2 });
   }
 });
 
@@ -8806,11 +8822,10 @@ var require_response73 = __commonJS({
     var { parse, decode: decodeV1 } = require_response72();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -9011,11 +9026,10 @@ var require_response77 = __commonJS({
     var { parse, decode: decodeV2 } = require_response76();
     var decode = async (rawData) => {
       const decoded = await decodeV2(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -9241,11 +9255,10 @@ var require_response81 = __commonJS({
       const { parse, decode: decodeV0 } = responseV0({ topics });
       const decode = async (rawData) => {
         const decoded = await decodeV0(rawData);
-        return {
-          ...decoded,
+        return __spreadProps(__spreadValues({}, decoded), {
           throttleTime: 0,
           clientSideThrottleTime: decoded.throttleTime
-        };
+        });
       };
       return {
         decode,
@@ -9337,11 +9350,10 @@ var require_response83 = __commonJS({
     var { parse, decode: decodeV0 } = require_response82();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -9451,11 +9463,10 @@ var require_response85 = __commonJS({
     var { parse, decode: decodeV0 } = require_response84();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -9549,11 +9560,10 @@ var require_response87 = __commonJS({
     var { parse, decode: decodeV0 } = require_response86();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -9644,11 +9654,10 @@ var require_response89 = __commonJS({
     var { parse, decode: decodeV0 } = require_response88();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -9761,11 +9770,10 @@ var require_response91 = __commonJS({
     var { parse, decode: decodeV1 } = require_response90();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -10057,11 +10065,10 @@ var require_response95 = __commonJS({
     var { parse, decode: decodeV0 } = require_response94();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -10461,11 +10468,10 @@ var require_response100 = __commonJS({
     var { parse, decode: decodeV1 } = require_response99();
     var decode = async (rawData) => {
       const decoded = await decodeV1(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -10574,11 +10580,10 @@ var require_response102 = __commonJS({
     var { parse, decode: decodeV0 } = require_response101();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -10654,10 +10659,9 @@ var require_response103 = __commonJS({
     };
     var parse = async (data) => {
       if (data.errorCode === SASL_AUTHENTICATION_FAILED && data.errorMessage) {
-        throw new KafkaJSProtocolError({
-          ...protocolAuthError,
+        throw new KafkaJSProtocolError(__spreadProps(__spreadValues({}, protocolAuthError), {
           message: data.errorMessage
-        });
+        }));
       }
       if (failure(data.errorCode)) {
         throw createErrorFromCode(data.errorCode);
@@ -10799,11 +10803,10 @@ var require_response106 = __commonJS({
     var { parse, decode: decodeV0 } = require_response105();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -10900,11 +10903,10 @@ var require_response108 = __commonJS({
     var { parse, decode: decodeV0 } = require_response107();
     var decode = async (rawData) => {
       const decoded = await decodeV0(rawData);
-      return {
-        ...decoded,
+      return __spreadProps(__spreadValues({}, decoded), {
         throttleTime: 0,
         clientSideThrottleTime: decoded.throttleTime
-      };
+      });
     };
     module2.exports = {
       decode,
@@ -11115,10 +11117,9 @@ var require_broker = __commonJS({
         for (const candidateVersion of availableVersions) {
           try {
             const apiVersions = requests.ApiVersions.protocol({ version: candidateVersion });
-            response = await this[PRIVATE.SEND_REQUEST]({
-              ...apiVersions(),
+            response = await this[PRIVATE.SEND_REQUEST](__spreadProps(__spreadValues({}, apiVersions()), {
               requestTimeout: this.connectionPool.connectionTimeout
-            });
+            }));
             break;
           } catch (e) {
             if (e.type !== "UNSUPPORTED_VERSION") {
@@ -11248,8 +11249,9 @@ var require_broker = __commonJS({
         const listOffsets = this.lookupRequest(apiKeys.ListOffsets, requests.ListOffsets);
         const result = await this[PRIVATE.SEND_REQUEST](listOffsets({ replicaId, isolationLevel, topics }));
         for (const response of result.responses) {
-          response.partitions = response.partitions.map(({ offsets, ...partitionData }) => {
-            return offsets ? { ...partitionData, offset: offsets.pop() } : partitionData;
+          response.partitions = response.partitions.map((_a) => {
+            var _b = _a, { offsets } = _b, partitionData = __objRest(_b, ["offsets"]);
+            return offsets ? __spreadProps(__spreadValues({}, partitionData), { offset: offsets.pop() }) : partitionData;
           });
         }
         return result;
@@ -11492,11 +11494,10 @@ var require_brokerPool = __commonJS({
         this.metadataMaxAge = metadataMaxAge || 0;
         this.logger = logger.namespace("BrokerPool");
         this.retrier = createRetry(assign({}, retry));
-        this.createBroker = (options) => new Broker({
+        this.createBroker = (options) => new Broker(__spreadValues({
           allowAutoTopicCreation,
-          authenticationTimeout,
-          ...options
-        });
+          authenticationTimeout
+        }, options));
         this.brokers = {};
         this.seedBroker = void 0;
         this.metadata = null;
@@ -11848,12 +11849,11 @@ var require_socketRequest = __commonJS({
         };
         this.timeoutHandler();
         this.rejected(new KafkaJSRequestTimeoutError(`Request ${requestInfo} timed out`, eventData));
-        this[PRIVATE.EMIT_EVENT](events.NETWORK_REQUEST_TIMEOUT, {
-          ...eventData,
+        this[PRIVATE.EMIT_EVENT](events.NETWORK_REQUEST_TIMEOUT, __spreadProps(__spreadValues({}, eventData), {
           apiName,
           apiKey,
           apiVersion
-        });
+        }));
       }
       completed({ size, payload }) {
         this.throwIfInvalidState({
@@ -12201,8 +12201,8 @@ var require_response110 = __commonJS({
         const processed = data.toString().split(",").map((str) => {
           const [_, key, value] = str.match(ENTRY_REGEX);
           return [key, value];
-        }).reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
-        return { original: data.toString(), ...processed };
+        }).reduce((obj, entry) => __spreadProps(__spreadValues({}, obj), { [entry[0]]: entry[1] }), {});
+        return __spreadValues({ original: data.toString() }, processed);
       }
     };
   }
@@ -12744,7 +12744,7 @@ var require_connection = __commonJS({
         this.authExpectResponse = false;
         const log = (level) => (message, extra = {}) => {
           const logFn = this.logger[level];
-          logFn(message, { broker: this.broker, clientId, ...extra });
+          logFn(message, __spreadValues({ broker: this.broker, clientId }, extra));
         };
         this.logDebug = log("debug");
         this.logError = log("error");
@@ -13186,8 +13186,7 @@ var require_cluster = __commonJS({
     } = require_errors();
     var COORDINATOR_TYPES = require_coordinatorTypes();
     var { keys } = Object;
-    var mergeTopics = (obj, { topic, partitions }) => ({
-      ...obj,
+    var mergeTopics = (obj, { topic, partitions }) => __spreadProps(__spreadValues({}, obj), {
       [topic]: [...obj[topic] || [], ...partitions]
     });
     var PRIVATE = {
@@ -13364,7 +13363,7 @@ var require_cluster = __commonJS({
           }
           const { leader } = metadata;
           const current = result[leader] || [];
-          return { ...result, [leader]: [...current, partitionId] };
+          return __spreadProps(__spreadValues({}, result), { [leader]: [...current, partitionId] });
         }, {});
       }
       async findGroupCoordinator({ groupId, coordinatorType = COORDINATOR_TYPES.GROUP }) {
@@ -13432,7 +13431,7 @@ var require_cluster = __commonJS({
         const topicConfigurations = {};
         const addDefaultOffset = (topic) => (partition) => {
           const { timestamp } = topicConfigurations[topic];
-          return { ...partition, timestamp };
+          return __spreadProps(__spreadValues({}, partition), { timestamp });
         };
         for (const topicData of topics) {
           const { topic, partitions, fromBeginning, fromTimestamp } = topicData;
@@ -13697,7 +13696,7 @@ var require_transactionStateMachine = __commonJS({
             guards[method] = guard(object, method, methodStateMapping[method]);
             return guards;
           }, {});
-          return { ...object, ...guardedMethods };
+          return __spreadValues(__spreadValues({}, object), guardedMethods);
         },
         transitionTo(state) {
           logger.debug(`Transaction state transition ${currentState} --> ${state}`);
@@ -14007,7 +14006,7 @@ var require_createTopicData = __commonJS({
 // node_modules/kafkajs/src/producer/responseSerializer.js
 var require_responseSerializer = __commonJS({
   "node_modules/kafkajs/src/producer/responseSerializer.js"(exports, module2) {
-    module2.exports = ({ topics }) => topics.flatMap(({ topicName: topicName2, partitions }) => partitions.map((partition) => ({ topicName: topicName2, ...partition })));
+    module2.exports = ({ topics }) => topics.flatMap(({ topicName: topicName2, partitions }) => partitions.map((partition) => __spreadValues({ topicName: topicName2 }, partition)));
   }
 });
 
@@ -14227,7 +14226,7 @@ var require_messageProducer = __commonJS({
 var require_swapObject = __commonJS({
   "node_modules/kafkajs/src/utils/swapObject.js"(exports, module2) {
     var { keys } = Object;
-    module2.exports = (object) => keys(object).reduce((result, key) => ({ ...result, [object[key]]: key }), {});
+    module2.exports = (object) => keys(object).reduce((result, key) => __spreadProps(__spreadValues({}, result), { [object[key]]: key }), {});
   }
 });
 
@@ -14709,9 +14708,7 @@ var require_offsetManager = __commonJS({
           offsets = initializeConsumerOffsets(consumerOffsets, topicOffsets);
         }
         offsets.forEach(({ topic, partitions }) => {
-          this.committedOffsets()[topic] = partitions.reduce(indexPartitions, {
-            ...this.committedOffsets()[topic]
-          });
+          this.committedOffsets()[topic] = partitions.reduce(indexPartitions, __spreadValues({}, this.committedOffsets()[topic]));
         });
       }
       clearOffsets({ topic, partition }) {
@@ -14880,7 +14877,7 @@ var require_subscriptionState = __commonJS({
       }
       assign(topicPartitions = []) {
         this.assignedPartitionsByTopic = topicPartitions.reduce((assigned, { topic, partitions = [] }) => {
-          return { ...assigned, [topic]: { topic, partitions } };
+          return __spreadProps(__spreadValues({}, assigned), { [topic]: { topic, partitions } });
         }, {});
       }
       pause(topicPartitions = []) {
@@ -15193,10 +15190,9 @@ var require_consumerGroup = __commonJS({
             topicsNotSubscribed
           };
           this.instrumentationEmitter.emit(RECEIVED_UNSUBSCRIBED_TOPICS, payload);
-          this.logger.warn("Consumer group received unsubscribed topics", {
-            ...payload,
+          this.logger.warn("Consumer group received unsubscribed topics", __spreadProps(__spreadValues({}, payload), {
             helpUrl: websiteUrl("docs/faq", "why-am-i-receiving-messages-for-topics-i-m-not-subscribed-to")
-          });
+          }));
         }
         const safeAssignment = arrayDiff(assignedTopics, topicsNotSubscribed);
         const currentMemberAssignment = safeAssignment.map((topic) => ({
@@ -15227,8 +15223,7 @@ var require_consumerGroup = __commonJS({
           cluster: this.cluster,
           topicConfigurations: this.topicConfigurations,
           instrumentationEmitter: this.instrumentationEmitter,
-          memberAssignment: currentMemberAssignment.reduce((partitionsByTopic, { topic, partitions }) => ({
-            ...partitionsByTopic,
+          memberAssignment: currentMemberAssignment.reduce((partitionsByTopic, { topic, partitions }) => __spreadProps(__spreadValues({}, partitionsByTopic), {
             [topic]: partitions
           }), {}),
           autoCommit: this.autoCommit,
@@ -15246,7 +15241,7 @@ var require_consumerGroup = __commonJS({
           try {
             await this[PRIVATE.JOIN]();
             await this[PRIVATE.SYNC]();
-            const memberAssignment = this.assigned().reduce((result, { topic, partitions }) => ({ ...result, [topic]: partitions }), {});
+            const memberAssignment = this.assigned().reduce((result, { topic, partitions }) => __spreadProps(__spreadValues({}, result), { [topic]: partitions }), {});
             const payload = {
               groupId: this.groupId,
               memberId: this.memberId,
@@ -15516,7 +15511,7 @@ var require_consumerGroup = __commonJS({
             }
           }
           const current = result[nodeId] || [];
-          return { ...result, [nodeId]: [...current, partitionId] };
+          return __spreadProps(__spreadValues({}, result), { [nodeId]: [...current, partitionId] });
         }, {});
       }
       filterPartitionsByNode(nodeId, topicPartitions) {
@@ -15526,7 +15521,7 @@ var require_consumerGroup = __commonJS({
         }));
       }
       getActiveTopicPartitions() {
-        return this.subscriptionState.active().reduce((acc, { topic, partitions }) => ({ ...acc, [topic]: new Set(partitions) }), {});
+        return this.subscriptionState.active().reduce((acc, { topic, partitions }) => __spreadProps(__spreadValues({}, acc), { [topic]: new Set(partitions) }), {});
       }
     };
   }
@@ -15987,10 +15982,9 @@ var require_runner = __commonJS({
               offset: batch2.lastOffset()
             });
             await this.autoCommitOffsetsIfNecessary();
-            this.instrumentationEmitter.emit(END_BATCH_PROCESS, {
-              ...payload,
+            this.instrumentationEmitter.emit(END_BATCH_PROCESS, __spreadProps(__spreadValues({}, payload), {
               duration: Date.now() - startBatchProcess
-            });
+            }));
             await this.heartbeat();
             return;
           }
@@ -16004,10 +15998,9 @@ var require_runner = __commonJS({
           } else if (this.eachBatch) {
             await this.processEachBatch(batch2);
           }
-          this.instrumentationEmitter.emit(END_BATCH_PROCESS, {
-            ...payload,
+          this.instrumentationEmitter.emit(END_BATCH_PROCESS, __spreadProps(__spreadValues({}, payload), {
             duration: Date.now() - startBatchProcess
-          });
+          }));
           await this.autoCommitOffsets();
           await this.heartbeat();
         };
@@ -16405,7 +16398,7 @@ var require_consumer = __commonJS({
           }
           const topicCommits = payload[topic] || [];
           topicCommits.push({ partition, offset: commitOffset, metadata });
-          return { ...payload, [topic]: topicCommits };
+          return __spreadProps(__spreadValues({}, payload), { [topic]: topicCommits });
         }, {});
         if (!consumerGroup) {
           throw new KafkaJSNonRetriableError("Consumer group was not initialized, consumer#run must be called first");
@@ -16700,7 +16693,10 @@ var require_admin = __commonJS({
       await cluster.refreshMetadataIfNecessary();
       return cluster.findTopicPartitionMetadata(topic).map(({ partitionId }) => partitionId).sort();
     };
-    var indexByPartition = (array) => array.reduce((obj, { partition, ...props }) => Object.assign(obj, { [partition]: { ...props } }), {});
+    var indexByPartition = (array) => array.reduce((obj, _a) => {
+      var _b = _a, { partition } = _b, props = __objRest(_b, ["partition"]);
+      return Object.assign(obj, { [partition]: __spreadValues({}, props) });
+    }, {});
     module2.exports = ({
       logger: rootLogger,
       instrumentationEmitter: rootInstrumentationEmitter,
@@ -16946,7 +16942,8 @@ var require_admin = __commonJS({
         if (resolveOffsets) {
           consumerOffsets = await Promise.all(consumerOffsets.map(async ({ topic, partitions }) => {
             const indexedOffsets = indexByPartition(await fetchTopicOffsets(topic));
-            const recalculatedPartitions = partitions.map(({ offset, partition, ...props }) => {
+            const recalculatedPartitions = partitions.map((_a) => {
+              var _b = _a, { offset, partition } = _b, props = __objRest(_b, ["offset", "partition"]);
               let resolvedOffset = offset;
               if (Number(offset) === EARLIEST_OFFSET) {
                 resolvedOffset = indexedOffsets[partition].low;
@@ -16954,11 +16951,10 @@ var require_admin = __commonJS({
               if (Number(offset) === LATEST_OFFSET) {
                 resolvedOffset = indexedOffsets[partition].high;
               }
-              return {
+              return __spreadValues({
                 partition,
-                offset: resolvedOffset,
-                ...props
-              };
+                offset: resolvedOffset
+              }, props);
             });
             await setOffsets({ groupId, topic, partitions: recalculatedPartitions });
             return {
@@ -17018,7 +17014,7 @@ var require_admin = __commonJS({
           }).catch(reject);
           consumer.pause([{ topic }]);
           for (const seekData of partitions) {
-            consumer.seek({ topic, ...seekData });
+            consumer.seek(__spreadValues({ topic }, seekData));
           }
         });
       };
@@ -17181,10 +17177,9 @@ var require_admin = __commonJS({
         const groupsByCoordinator = Object.values(coordinatorsForGroup.reduce((coordinators, { coordinator, groupId }) => {
           const group = coordinators[coordinator.nodeId];
           if (group) {
-            coordinators[coordinator.nodeId] = {
-              ...group,
+            coordinators[coordinator.nodeId] = __spreadProps(__spreadValues({}, group), {
               groupIds: [...group.groupIds, groupId]
-            };
+            });
           } else {
             coordinators[coordinator.nodeId] = { coordinator, groupIds: [groupId] };
           }
@@ -17658,7 +17653,7 @@ var require_src = __commonJS({
           warnOfDefaultPartitioner(this[PRIVATE.LOGGER]);
         }
         return createProducer({
-          retry: { ...this[PRIVATE.CLUSTER_RETRY], ...retry },
+          retry: __spreadValues(__spreadValues({}, this[PRIVATE.CLUSTER_RETRY]), retry),
           logger: this[PRIVATE.LOGGER],
           cluster,
           createPartitioner,
@@ -17695,7 +17690,7 @@ var require_src = __commonJS({
           instrumentationEmitter
         });
         return createConsumer({
-          retry: { ...this[PRIVATE.CLUSTER_RETRY], ...retry },
+          retry: __spreadValues(__spreadValues({}, this[PRIVATE.CLUSTER_RETRY]), retry),
           logger: this[PRIVATE.LOGGER],
           cluster,
           groupId,
@@ -17720,7 +17715,7 @@ var require_src = __commonJS({
           instrumentationEmitter
         });
         return createAdmin({
-          retry: { ...this[PRIVATE.CLUSTER_RETRY], ...retry },
+          retry: __spreadValues(__spreadValues({}, this[PRIVATE.CLUSTER_RETRY]), retry),
           logger: this[PRIVATE.LOGGER],
           instrumentationEmitter,
           cluster
@@ -17747,9 +17742,9 @@ var require_kafkajs = __commonJS({
     var AclOperationTypes = require_aclOperationTypes();
     var AclPermissionTypes = require_aclPermissionTypes();
     var ResourcePatternTypes = require_resourcePatternTypes();
-    var { isRebalancing, isKafkaJSError, ...errors } = require_errors();
+    var _a = require_errors(), { isRebalancing, isKafkaJSError } = _a, errors = __objRest(_a, ["isRebalancing", "isKafkaJSError"]);
     var { LEVELS } = require_loggers();
-    module2.exports = {
+    module2.exports = __spreadValues({
       Kafka: Kafka2,
       PartitionAssigners,
       AssignerProtocol,
@@ -17762,9 +17757,8 @@ var require_kafkajs = __commonJS({
       AclOperationTypes,
       AclPermissionTypes,
       ResourcePatternTypes,
-      ConfigSource,
-      ...errors
-    };
+      ConfigSource
+    }, errors);
   }
 });
 
