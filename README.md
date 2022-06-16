@@ -41,17 +41,18 @@ Kafka topic cleanup policy. Default `"delete"`.
 Nothing...
 
 ## Example usage
-
-uses: actions/create-kafka-topic@v1.1
-with:
-  KAFKA_BROKER_URL: 'http://localhost:8080'
-  KAFKA_SSL_CA: 'begin_certificate...end_certificate'
-  KAFKA_SSL_KEY: 'begin_private_key...end_private_key'
-  KAFKA_SSL_CERT: 'begin_certificate...end_certificate'
-  TOPIC: 'my-topic.v1'
-  REPLICATION_FACTOR: '3'
-  NUM_PARTITIONS: '6'
-  CLEANUP_POLICY: 'compact'
+```
+    uses: actions/create-kafka-topic@v1.1
+    with:
+    KAFKA_BROKER_URL: 'http://localhost:8080'
+    KAFKA_SSL_CA: 'begin_certificate...end_certificate'
+    KAFKA_SSL_KEY: 'begin_private_key...end_private_key'
+    KAFKA_SSL_CERT: 'begin_certificate...end_certificate'
+    TOPIC: 'my-topic.v1'
+    REPLICATION_FACTOR: '3'
+    NUM_PARTITIONS: '6'
+    CLEANUP_POLICY: 'compact'
+```
 
 ## Publish a new version
 
